@@ -17,7 +17,8 @@ export default {
         display: flex;
         line-height: 44px;
         text-align: center;
-        box-shadow: 0 1px 1px rgba(100, 100, 100, 0.1);
+        /* box-shadow: 0 1px 1px rgba(100, 100, 100, 0.1); */
+        border: none;
     }
     .left{
         width: 60px;

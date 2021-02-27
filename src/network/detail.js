@@ -14,7 +14,8 @@ export class Goods {
     this.title = itemInfo.title
     this.desc = itemInfo.desc
     this.newPrice = itemInfo.price
-    this.oldPrice = itemInfo.oldPrice      
+    this.oldPrice = itemInfo.oldPrice 
+    this.lowNowPrice = itemInfo.lowNowPrice      
     this.discount = itemInfo.discountDesc
     this.columns = columns
     this.services = services      
@@ -41,4 +42,10 @@ export class GoodsParam {
     this.infos = info.set;
     this.sizes = rule.tables;
   }
+}
+
+export function getRecommend(){
+  return request({
+    url:'/recommend'
+  })
 }

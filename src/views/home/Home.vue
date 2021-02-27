@@ -13,7 +13,7 @@
           <HomeSwiper :banners='banners' @swiperImgLoad='swiperImgLoad'></HomeSwiper>
         <recommend-view :recommends="recommends"></recommend-view>
         <feature-view/>
-        <tab-control class="tab-control" 
+        <tab-control class="tab-control"  
                     :title="['流行','新款','精选']" @tabClick='tabClick'  ref="tabControl2" />
         <goods-list :goods="goods[currentType].list">
         </goods-list>
@@ -28,16 +28,13 @@ import NavBar from 'components/common/navbar/NavBar.vue'
 import TabControl from '../../components/content/tabControl/TabControl.vue'
 import GoodsList from 'components/content/goods/GoodsList.vue'
 import Scroll from 'components/common/scroll/Scroll.vue'
-import BackTop from 'components/common/backTop/BackTop.vue'
-
-
 import HomeSwiper from './childComps/homeSwiper.vue'
 import RecommendView from './childComps/recommendView.vue'
 import FeatureView from './childComps/FeatureView'
 
 
-
 import {getHomeMuilidata,getHomeGoods} from 'network/home.js'
+import {itemListenerMixin,backTopMixin} from 'common/mixin'
 
   export default {
     name: "Home",
@@ -54,10 +51,9 @@ import {getHomeMuilidata,getHomeGoods} from 'network/home.js'
         isShow:false,
         taboffsettop:0,
         isTabFixed:false,
-        saveY:0
+        saveY:0,
       }
     },
-    
     components:{
         NavBar,
         HomeSwiper,
@@ -66,7 +62,6 @@ import {getHomeMuilidata,getHomeGoods} from 'network/home.js'
         TabControl,
         GoodsList,
         Scroll,
-        BackTop,
     },
     created(){
       this.getHomeMuilidata()
@@ -74,44 +69,40 @@ import {getHomeMuilidata,getHomeGoods} from 'network/home.js'
       this.getHomeGoods('new')
       this.getHomeGoods('sell')
     },
-    activeted(){
-      this.$refs.scroll.scrollTo(0,this.saveY,0)
+    activated(){
       this.$refs.scroll.refresh()
+      this.$refs.scroll.scrollTo(0,this.saveY,0)
     },
-    deactiveted(){
-      this.saveY = this.$refs.scroll.scroll.y()
-      
+    deactivated(){
+      this.saveY = this.$refs.scroll.scroll.y
+      // console.log(this.$refs.scroll.scroll.y)
+      //取消全局事件的监听
+      this.$bus.$off('itemImgLoad',this.itemImgListener)
     },
-    mounted(){
-
-      const refresh = this.debounce(this.$refs.scroll.refresh,5)
-
-      this.$bus.$on('itemImageLoad',()=>{
-        refresh()
-      })
-    },
+    // mounted(){
+    //   const refresh = this.debounce(this.$refs.scroll.refresh,5)
+    //   console.log(2222222222222222)
+    //   this.itemImgListener = () => refresh()
+    //   this.$bus.$on('itemImageLoad',this.itemImgListener)
+    // },
     methods:{
       //事件监听相关方法
-
       loadMore(){
         this.getHomeGoods(this.currentType)
       },
-      debounce(func,delay){
-        let timer = null
-        return function(){
-          if(timer) clearTimeout(timer)
-          timer = setTimeout(() => {
-            func.apply(this)
-          }, delay);
-        }
-      },
+      // debounce(func,delay){
+      //   let timer = null
+      //   return function(){
+      //     if(timer) clearTimeout(timer)
+      //     timer = setTimeout(() => {
+      //       func.apply(this)
+      //     }, delay);
+      //   }
+      // },
       tabClick(index){
         this.currentType = Object.keys(this.goods)[index]
         this.$refs.tabControl1.currentIndex = index
         this.$refs.tabControl2.currentIndex = index
-      },
-      backClick(){
-        this.$refs.scroll.scrollTo(0,0,500)
       },
       contentScroll(position){
         this.isShow = (-position.y) > 800
@@ -134,11 +125,11 @@ import {getHomeMuilidata,getHomeGoods} from 'network/home.js'
         getHomeGoods(type,page).then(res=>{
           this.goods[type].list.push(...res.data.list)
           this.goods[type].page += 1
-
           this.$refs.scroll.finishPullUp()
         })
       }
     },
+    mixins:[itemListenerMixin,backTopMixin]
       
   }
 

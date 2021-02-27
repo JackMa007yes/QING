@@ -1,6 +1,7 @@
 <template>
   <div class="goods-item" @click="itemClick">
-      <img :src="goodsItem.show.img" alt="" @load="imageLoad"> 
+      <!-- <img v-lazy='showImage' alt="" @load="imageLoad">  -->
+      <img :src="showImage" alt="" @load="imageLoad">
       <div class="goods-info">
         <p>{{goodsItem.title}}</p>
         <span class="price">{{goodsItem.price}}</span>
@@ -20,18 +21,23 @@ export default {
       }
     }
   },
+  computed:{
+    showImage(){
+      return this.goodsItem.img || this.goodsItem.image || this.goodsItem.show.img
+    }
+  },
   methods:{
     imageLoad(){
       this.$bus.$emit('itemImageLoad')
     },
     itemClick(){
-      this.$router.push('/detail/'+this.goodsItem.iid)
+      this.$router.push('/detail/' + this.goodsItem.iid)
     }
   }
 }
 </script>
 
-<style>
+<style scoped>
   .goods-item {
     padding-bottom: 40px;
     position: relative;
@@ -40,10 +46,10 @@ export default {
 
   .goods-item img {
     width: 100%;
-    border-radius: 5px;
+    border-radius: 2%;
   }
 
-  .goods-info {
+  .goods-item .goods-info {
     font-size: 12px;
     position: absolute;
     bottom: 5px;
@@ -53,23 +59,23 @@ export default {
     text-align: center;
   }
 
-  .goods-info p {
+  .goods-item .goods-info p {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     margin-bottom: 3px;
   }
 
-  .goods-info .price {
+  .goods-item .goods-info .price {
     color: var(--color-high-text);
     margin-right: 20px;
   }
 
-  .goods-info .collect {
+  .goods-item .goods-info .collect {
     position: relative;
   }
 
-  .goods-info .collect::before {
+  .goods-item .goods-info .collect::before {
     content: '';
     position: absolute;
     left: -15px;

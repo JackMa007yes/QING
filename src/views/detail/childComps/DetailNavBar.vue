@@ -19,7 +19,7 @@ export default {
   data(){
     return {
       titles:['商品','参数','评论','推荐'],
-      currentIndex:0
+      currentIndex: 0
     }
   },
   components:{
@@ -28,6 +28,7 @@ export default {
   methods:{
     choose(index){
       this.currentIndex = index
+      this.$emit('titleClick',index)
     },
     backClick(){
       this.$router.back()
@@ -40,7 +41,7 @@ export default {
   .title {
     display: flex;
     justify-content: space-around;
-    font-size: 13px;
+    font-size: 14px;
     line-height: 44px;
   }
   .active{
